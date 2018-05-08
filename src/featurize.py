@@ -47,6 +47,19 @@ def make_exists_function(key):
             return "N/A"
     return get_key_if_exists
 
+def add_restaurant_count_column(dataframe):
+    restaurant_frequency = dataframe.groupby(['name']).count().sort_values('address', ascending=False)
+
+    restaurant_frequency = pd.DataFrame(restaurant_frequency['address'])
+
+    restaurant_frequency.columns = ['count']
+
+    restaurant_frequency['name'] = restaurant_frequency.index
+
+    restaurant_frequency = restaurant_frequency[['name', 'count']]
+
+    return previously_open_US_restaurants.merge(restaurant_frequency, how='left', left_on='name', right_on='name')
+
 if __name__ == "__main__":
     file_path = '~/g/projects/yelp/dataset/business.json'
     yelp_business_data = create_pandas_df_from_json(file_path)
@@ -68,15 +81,23 @@ if __name__ == "__main__":
     open_restaurants['in_US'] = open_restaurants['state'].isin(states)
     previously_open_US_restaurants = open_restaurants[open_restaurants['in_US'] == True]
 
+    #creates dummy columns for
     previously_open_US_restaurants['flat_attributes'] = previously_open_US_restaurants['attributes'].apply(flatten_dict)
-
-    all_keys = []
+    all_attributes = []
     for row in previously_open_US_restaurants['flat_attributes']:
-        all_keys.extend(row.keys())
-    unique_keys = set(all_keys)
+        all_attributes.extend(row.keys())
+    unique_attributes = list(dict(Counter(all_attributes).most_common(50)).keys())
 
-    for key in unique_keys:
+    for key in unique_attributes:
         previously_open_US_restaurants['has_'+key] = previously_open_US_restaurants['flat_attributes'].apply(lambda x: key in x)
 
         f = make_exists_function(key)
         previously_open_US_restaurants[key + ' value:'] = previously_open_US_restaurants['flat_attributes'].apply(f)
+
+    all_categories = []
+    [all_categories.extend(item) for item in list(previously_open_US_restaurants['categories'])]
+
+    most_common_categories = list(dict(Counter(all_categories).most_common(50)).keys())
+
+    for key in most_common_categories:
+        previously_open_US_restaurants[f"{key}_true"] = previously_open_US_restaurants['categories'].apply(lambda x: key in x)
