@@ -8,6 +8,7 @@ import time
 from random import shuffle
 import json
 from pymongo import MongoClient
+from collections import Counter
 
 def create_pandas_df_from_json(path):
     '''
@@ -27,8 +28,26 @@ def is_food(item):
     else:
         return False
 
+def flatten_dict(row):
+    out = {}
+    for key, value in row.items():
+        if type(value) != dict:
+            out[key] = value
+        else:
+            sub_key = key
+            for k, v in value.items():
+                out[sub_key + "|" + k] = v
+    return out
+
+def make_exists_function(key):
+    def get_key_if_exists(row):
+        if key in row:
+            return row[key]
+        else:
+            return "N/A"
+    return get_key_if_exists
+
 if __name__ == "__main__":
-    #reads yelp data into dataframe
     file_path = '~/g/projects/yelp/dataset/business.json'
     yelp_business_data = create_pandas_df_from_json(file_path)
 
@@ -49,7 +68,15 @@ if __name__ == "__main__":
     open_restaurants['in_US'] = open_restaurants['state'].isin(states)
     previously_open_US_restaurants = open_restaurants[open_restaurants['in_US'] == True]
 
+    previously_open_US_restaurants['flat_attributes'] = previously_open_US_restaurants['attributes'].apply(flatten_dict)
 
-    client = MongoClient('mongodb://localhost:27017/')
-    restaurants = client['restaurants']
-    google_places = restaurants['google_places']
+    all_keys = []
+    for row in previously_open_US_restaurants['flat_attributes']:
+        all_keys.extend(row.keys())
+    unique_keys = set(all_keys)
+
+    for key in unique_keys:
+        previously_open_US_restaurants['has_'+key] = previously_open_US_restaurants['flat_attributes'].apply(lambda x: key in x)
+
+        f = make_exists_function(key)
+        previously_open_US_restaurants[key + ' value:'] = previously_open_US_restaurants['flat_attributes'].apply(f)
