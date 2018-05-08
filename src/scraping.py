@@ -8,90 +8,47 @@ import json
 from pymongo import MongoClient
 
 
-def create_pandas_df_from_json(path):
-    '''
-    INPUT: filepath string
-    OUTPUT: pandas database
-    '''
-    return pd.read_json(file_path, lines=True)
-
-def is_food(item):
-    '''
-    INPUT: cell from pandas dataframe
-    OUTPUT: boolean
-    '''
-    restaurants_and_related_categories = ['Restaurants', 'Italian','Food', 'Bars','Fast Food', 'Coffee & Tea', 'Sandwiches']
-    if len(set(restaurants_and_related_categories) & set(item)) >= 1:
-        return True
-    else:
-        return False
-
-def is_closed_on_google(keys, index, dataframe, radius):
-    '''
-    INPUT:
-    -index of dataframe (int)
-    -name of dataframe (pandas dataframe)
-    OUTPUT:
-    Nothing - modifies dataframe in place
-    '''
-
-    #selects the 3 columns needed to get results from Google Places
+def current_google_data(keys, index, dataframe, radius):
     name = dataframe[['name','latitude','longitude']].iloc[index,0]
     latitude = dataframe[['name','latitude','longitude']].iloc[index,1]
     longitude = dataframe[['name','latitude','longitude']].iloc[index,2]
 
-    #grabs my Google api key
-    with open('/Users/ElliottC/.secrets/google_keys.txt') as f:
-        keys = yaml.load(f)
+    link = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + \
+    str(latitude) + ',' + str(longitude) + '&radius=' + str(radius) + '&keyword=' + str(name) + '&key=' + str(keys)
 
-    #creates the url to make a request to the Google api
-    google_places_api_root = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='
-    google_api_link = google_places_api_root +  str(latitude) + ',' + \
-    str(longitude) + '&radius=' + str(10) + '&keyword=' + name + '&key=' + keys
-
-    #queries the api
     response = requests.get(link)
+    response_dict = response.json()
 
-    #if api returns nothing, prints status code and sleeps for 10 seconds
+    response_dict['queried_name'] = name
+    response_dict['queried_latitude'] = latitude
+    response_dict['queried_longitude'] = longitude
     if response.status_code != 200:
         print(response.status_code)
         time.sleep(10)
-    #if business was not found nearby, sets value to 'no search results'
-    elif len(str(response.json())) < 100:
-        dataframe.at[index,'closed_on_google'] = "No search results"
-    #since api only has 'closed on google' key when business is closed,
-    #if we can't get this value, business is assumed open
+        response = requests.get(link)
+        if response.status_code != 200:
+            print(response.status_code)
+            time.sleep(10)
+            return "Came back empty"
+    if len(str(response.json())) < 100:
+        return response_dict
     else:
-        try:
-            dataframe.at[index,'closed_on_google'] = response.json()['results'][0]['permanently_closed']
-        except:
-            dataframe.at[index,'closed_on_google'] = False
+        return response_dict
 
-def bulk_google_maps_search(dataframe, start_idx, end_idx, update_frequency, api_key_path):
-    '''
-    INPUT:
-    -dataframe (pandas)
-    -start_idx (int), first row to look at in dataframe
-    -end_idx (int), last row to look at in dataframe
-    -update_frequency (int) frequency at which console will let user know how
-    many businesses have been pinged on Google
-    '''
-    #sets up MongoDB, which will save data after every api call
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['restaurants']
-    main_data = db['main_data']
-
-    #grabs my Google api key
-    with open(api_key_path) as f:
-        keys = yaml.load(f)
+def bulk_google_places_search(google_keys, dataframe, start_idx,
+                              end_idx, mongo=google_places,
+                              radius=10, update_frequency=100,
+                              print_updates = True):
 
     start_time = time.time()
+
+    with open('/Users/ElliottC/.secrets/google_keys.txt') as f:
+        google_keys = yaml.load(f)
+
     for i in range(start_idx, end_idx):
-        is_closed_on_google(keys, i, dataframe, 1)
-        #updates the user on the speed of the api requests and estimated
-        #time to finish
-        main_data.insert_one(dataframe.iloc[0])
-        if i % update_frequency == 0:
+        google_places.insert_one(current_google_data(google_keys, i, dataframe, radius))
+        if (i % update_frequency == 0) and print_updates:
+            print(f"At index {i}: {end_idx-i} remaining requests")
             elapsed = round(time.time() - start_time, 2)
             speed = round(elapsed / update_frequency, 2)
             remaining_time = str(round(((end_idx-i) * speed),2)/60/60) + " hours"
@@ -120,7 +77,7 @@ if __name__ == "__main__":
     open_restaurants['in_US'] = open_restaurants['state'].isin(states)
     previously_open_US_restaurants = open_restaurants[open_restaurants['in_US'] == True]
 
-    #updates dataframe with closed/open boolean from Google Places API
-    bulk_google_maps_search(previously_open_US_restaurants, 0,
-                            len(previously_open_US_restaurants) - 1,
-                            10, '/Users/ElliottC/.secrets/google_keys.txt')
+
+    client = MongoClient('mongodb://localhost:27017/')
+    restaurants = client['restaurants']
+    google_places = restaurants['google_places']
