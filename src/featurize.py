@@ -60,6 +60,12 @@ def add_restaurant_count_column(dataframe):
 
     return previously_open_US_restaurants.merge(restaurant_frequency, how='left', left_on='name', right_on='name')
 
+def closed_on_google(row):
+    try:
+        return row[0]['permanently_closed']
+    except:
+        return False
+
 if __name__ == "__main__":
     file_path = '~/g/projects/yelp/dataset/business.json'
     yelp_business_data = create_pandas_df_from_json(file_path)
@@ -101,3 +107,19 @@ if __name__ == "__main__":
 
     for key in most_common_categories:
         previously_open_US_restaurants[f"{key}_true"] = previously_open_US_restaurants['categories'].apply(lambda x: key in x)
+
+    client = MongoClient('mongodb://localhost:27017/')
+    restaurants = client['restaurants']
+    google_places = restaurants['google_places']
+    start_time = time.time()
+
+    google_df = pd.DataFrame(list(google_places.find()))
+
+    google_df = google_df[['queried_name', 'yelp_business_id', 'results']]
+
+    google_df['closed_on_google'] = google_df['results'].apply(closed_on_google)
+
+    restaurants_with_google_data = previously_open_US_restaurants.merge(google_df, how='inner', left_on='business_id', right_on='yelp_business_id')
+
+    #removes rows without any matching data from Google
+    restaurants_with_google_data = restaurants_with_google_data[restaurants_with_google_data['results'].map(len) > 0]
