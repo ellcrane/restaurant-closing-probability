@@ -52,7 +52,7 @@ def add_restaurant_count_column(dataframe):
 
     restaurant_frequency = pd.DataFrame(restaurant_frequency['address'])
 
-    restaurant_frequency.columns = ['count']
+    restaurant_frequency.columns = ['restaurant_count']
 
     restaurant_frequency['name'] = restaurant_frequency.index
 
@@ -107,6 +107,8 @@ if __name__ == "__main__":
 
     for key in most_common_categories:
         previously_open_US_restaurants[f"Category|{key}_true"] = previously_open_US_restaurants['categories'].apply(lambda x: key in x)
+
+    previously_open_US_restaurants = add_restaurant_count_column(previously_open_US_restaurants)
 
     client = MongoClient('mongodb://localhost:27017/')
     restaurants = client['restaurants']
