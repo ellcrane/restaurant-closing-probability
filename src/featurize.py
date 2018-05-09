@@ -67,7 +67,7 @@ def closed_on_google(row):
         return False
 
 if __name__ == "__main__":
-    file_path = '~/g/projects/yelp/dataset/business.json'
+    file_path = '/Users/ElliottC/g/projects/yelp/predicting_restaurant_closure/data/business.json'
     yelp_business_data = create_pandas_df_from_json(file_path)
 
     #filters businesses that were open when this dataset was published Jan. 2018
@@ -95,10 +95,10 @@ if __name__ == "__main__":
     unique_attributes = list(dict(Counter(all_attributes).most_common(50)).keys())
 
     for key in unique_attributes:
-        previously_open_US_restaurants['has_'+key] = previously_open_US_restaurants['flat_attributes'].apply(lambda x: key in x)
+        previously_open_US_restaurants['Attribute|has_'+key] = previously_open_US_restaurants['flat_attributes'].apply(lambda x: key in x)
 
         f = make_exists_function(key)
-        previously_open_US_restaurants[key + ' value:'] = previously_open_US_restaurants['flat_attributes'].apply(f)
+        previously_open_US_restaurants['Attribute|' +key + ' value:'] = previously_open_US_restaurants['flat_attributes'].apply(f)
 
     all_categories = []
     [all_categories.extend(item) for item in list(previously_open_US_restaurants['categories'])]
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     most_common_categories = list(dict(Counter(all_categories).most_common(50)).keys())
 
     for key in most_common_categories:
-        previously_open_US_restaurants[f"{key}_true"] = previously_open_US_restaurants['categories'].apply(lambda x: key in x)
+        previously_open_US_restaurants[f"Category|{key}_true"] = previously_open_US_restaurants['categories'].apply(lambda x: key in x)
 
     client = MongoClient('mongodb://localhost:27017/')
     restaurants = client['restaurants']
@@ -123,3 +123,5 @@ if __name__ == "__main__":
 
     #removes rows without any matching data from Google
     restaurants_with_google_data = restaurants_with_google_data[restaurants_with_google_data['results'].map(len) > 0]
+
+    restaurants_with_google_data.to_csv('/Users/ElliottC/g/projects/yelp/predicting_restaurant_closure/data/featurized_dataframe.csv')
