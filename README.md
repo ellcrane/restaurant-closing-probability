@@ -61,7 +61,7 @@ The final model had the following feature count by category:
 
 Here’s a breakdown of feature importance, or how often the model used each feature:
 
-
+<!-- ![Feature Importance by Category](images/Feature Importances.png) -->
 
 As you can see, the review-based features were used most often, which isn’t surprising since review-based features were tied for the most number of features. It is interesting that the Google Maps restaurant competitiveness based features were used second most, even though there were only 6 of those features. I think this suggests that those features were very important, and additional features that compare a restaurant to its surroundings would be useful.
 
