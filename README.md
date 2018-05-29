@@ -77,7 +77,7 @@ Elliott Crane
 
 Data Scientist
 
-<www.willitclose.com>
+[www.willitclose.com](http://www.willitclose.com)
 
 <ellcrane@gmail.com>
 
