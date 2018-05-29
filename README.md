@@ -1,6 +1,8 @@
 # Predicting Restaurant Closure
 ## Will It Close? - [www.WillitClose.com](http://www.willitclose.com)
-### About this project
+
+
+## About this project
 I ***love*** Mongolian grill. So I was heartbroken to find out that my favorite Mongolian grill restaurant had closed. But from this tragedy I found an opportunity. I thought that if I could accurately predict restaurant closure, that would provide valuable information to stakeholders, such as investors, that need a risk assessment of a restaurant. The closing probability predictions were made on restaurant data from May 2018 and deployed at [www.willitclose.com](www.willitclose.com)
 
 Overview
@@ -26,7 +28,7 @@ Overview
 
 *Continue reading if you are curious about the details of the project, otherwise feel free to check out the code, the website, or email me at <ellcrane@gmail.com>*
 
-### Data Sources
+## Data Sources
 
 #### Starting point
 
@@ -43,14 +45,14 @@ I thought that economic data about the location in which the restaurant was loca
 #### Google Maps API
 I also thought that information on a restaurant’s competitiveness, such as the density in that area, or the average price/star-rating of its neighbors would be relevant. I used the Google Maps Places API to get that data, and also engineered features such as restaurant rating minus the average rating of nearby restaurants. 
 
-### Modeling
+## Modeling
 For modeling, I used Random Forest, Gradient Boost, KNeighbors, and Logistic Regression. With a .66/.33 train/test split, gradient boost performed the best, with an AUC of .73.
 
 For the predictions on the website, only the Yelp - Basic Information features were used, as those were the easiest to obtain for new data, as it could be obtained only by using the Google Maps and Yelp API. The AUC only using this basic information was .67.
 
 Based on these AUCs, predicting restaurant closure in 4 months is still very difficult to do, but the model does provide some signal.
 
-### Feature Overview
+## Feature Overview
 The final model had the following feature count by category:
 - Reviews: 100
 - Google Maps: 6
@@ -63,7 +65,7 @@ Here’s a breakdown of feature importance, or how often the model used each fea
 
 As you can see, the review-based features were used most often, which isn’t surprising since review-based features were tied for the most number of features. It is interesting that the Google Maps restaurant competitiveness based features were used second most, even though there were only 6 of those features. I think this suggests that those features were very important, and additional features that compare a restaurant to its surroundings would be useful.
 
-### Potential Improvements
+## Potential Improvements
 - More features
 	- I think the biggest improvement in this project would come from improving the predictive power of the model.
 - Improve website
