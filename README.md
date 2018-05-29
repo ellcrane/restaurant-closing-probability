@@ -30,19 +30,19 @@ Overview
 
 ## Data Sources
 
-#### Starting point
+### Starting point
 
 My starting point for this project was a Yelp Academic Dataset from January 2018 on ~175,000 businesses in different industries around the world. After slicing this data down to only those businesses I was interested in, restaurants in the US that were still in business, I had ~35,000 businesses. The restaurants were in 6 major cities, but the final model would be able to make predictions on restaurants in any location.
 
 I then used the Google Maps API to get the updated information on if the restaurants were still open or closed. About 2% or 700 restaurants had closed in that 4 month period from January 2018 to May 2018.
 
-#### Yelp Academic Dataset - Basic Information
+### Yelp Academic Dataset - Basic Information
 This included review count, star rating, price level, category (Chinese, Sandwiches, etc.), attributes (has wifi, noise level, bike parking, etc.). The categorical and attributes data had to be cleaned and procured from the columns using pandas apply/lambda.
-#### Yelp Academic Dataset - Reviews
+### Yelp Academic Dataset - Reviews
 In order to get more granular features, I bucketed the reviews into 1-star, 2-4 star, and 5-star and then did TFIDF, so the features looked like [# of stars]: [word] (5-star: “service”, etc.). In order to limit the total number of features, I only used the most frequent 100 words from each star bucket for open restaurants, then did the same for closed restaurants. This resulted in a total of 322 features. To limit this feature count further, I put exclusively these features into a gradient boosted classifier to predict if the restaurant were open/closed, and then used only the top 100 features by feature importance in the final model.
 United States Census Bureau
 I thought that economic data about the location in which the restaurant was located would be important, so I went to the census website. Their data was very poorly documented and difficult to parse, so I decided I would scrape the data, which was organized by zip code on factfinder.census.gov. Some of the information I collected was average income, average age, percentage living in poverty, and the number of veterans.
-#### Google Maps API
+### Google Maps API
 I also thought that information on a restaurant’s competitiveness, such as the density in that area, or the average price/star-rating of its neighbors would be relevant. I used the Google Maps Places API to get that data, and also engineered features such as restaurant rating minus the average rating of nearby restaurants. 
 
 ## Modeling
