@@ -24,7 +24,7 @@ Overview
 - Exploratory Data Analysis
 	- Matplotlib
 
-*Continue reading if you are curious about the details of the project, otherwise feel free to check out the code, the website, or email me at <ellcrane@gmail.com>
+**Continue reading if you are curious about the details of the project, otherwise feel free to check out the code, the website, or email me at <ellcrane@gmail.com>**
 
 ### Data Sources
 
