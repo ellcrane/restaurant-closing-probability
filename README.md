@@ -1,7 +1,7 @@
 # Predicting Restaurant Closure
-## Will It Close? - <http://www.WillitClose.com>
+## Will It Close? - <www.WillitClose.com>
 ### About this project
-I ***love*** Mongolian grill. So I was heartbroken to find out that my favorite Mongolian grill restaurant had closed. But from this tragedy I found an opportunity. I thought that if I could accurately predict restaurant closure, that would provide valuable information to stakeholders, such as investors, that need a risk assessment of a restaurant. The closing probability predictions were made on restaurant data from May 2018 and deployed at www.willitclose.com
+I ***love*** Mongolian grill. So I was heartbroken to find out that my favorite Mongolian grill restaurant had closed. But from this tragedy I found an opportunity. I thought that if I could accurately predict restaurant closure, that would provide valuable information to stakeholders, such as investors, that need a risk assessment of a restaurant. The closing probability predictions were made on restaurant data from May 2018 and deployed at <www.willitclose.com>
 
 Overview
 - Data sources:
@@ -77,10 +77,10 @@ Elliott Crane
 
 Data Scientist
 
-www.willitclose.com
+<www.willitclose.com>
 
-ellcrane@gmail.com
+<ellcrane@gmail.com>
 
-linkedin.com/in/ellcrane
+<linkedin.com/in/ellcrane>
 
-github.com/ellcrane
+<github.com/ellcrane>
