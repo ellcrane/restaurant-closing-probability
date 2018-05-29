@@ -81,6 +81,6 @@ Data Scientist
 
 <ellcrane@gmail.com>
 
-<linkedin.com/in/ellcrane>
+[linkedin.com/in/ellcrane](https://www.linkedin.com/in/ellcrane/)
 
-<github.com/ellcrane>
+[github.com/ellcrane](https://github.com/ellcrane)
