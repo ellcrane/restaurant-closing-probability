@@ -21,8 +21,8 @@ class ScrapeCensus:
         zip_codes = zip_codes_file.decode('utf-8').split(',')
         for i in range(n_to_scrape):
             current_zip = zip_codes[i]
-            print(current_zip)
             search_box = self.browser.find_element_by_css_selector("input#cfsearchtextbox")
+            time.sleep(1)
             search_box.click()
             search_box.send_keys(current_zip)
             search_button = self.browser.find_element_by_css_selector("a#communityfactssubmit")
@@ -41,7 +41,7 @@ class ScrapeCensus:
             self.s3.put_object(Bucket='zip-code-economic-data', Key='zip_code: '+current_zip, Body=page_source)
             zip_codes.remove(current_zip)
             self.s3.put_object(Bucket='zip-code-economic-data', Key='all_zip_codes',Body=",".join(zip_codes))
-            print(f"{i}: {current_zip}")
+            print(f"{i}: zip code: {current_zip}, remaining zip codes: {len(zip_codes)}")
 
 
 def get_zipped_postcode_data_from_s3_bucket(postcodes):
@@ -69,4 +69,5 @@ def full_zip(row):
 
 if __name__ == "__main__":
     scraper = ScrapeCensus('https://factfinder.census.gov/faces/nav/jsf/pages/community_facts.xhtml?src=bkmk#')
-    scraper.scrape(5)
+    time.sleep(1)
+    scraper.scrape(20000)
