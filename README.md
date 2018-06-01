@@ -67,7 +67,8 @@ In order to get more granular features, I bucketed the reviews into 1-star, 2-4 
 <!-- ![Review top features](images/10_review_top_features.png) -->
 <img src="images/10_review_top_features.png" width="600"/>
 To limit this feature count further, I put exclusively these features into a gradient boosted classifier to predict if the restaurant were open/closed, and then used only the top 100 features by feature importance in the final model.
-United States Census Bureau
+<!-- ![Census data](images/8_census.png) -->
+<img src="images/8_census.png" width="600"/>
 I thought that economic data about the location in which the restaurant was located would be important, so I went to the census website. Their data was very poorly documented and difficult to parse, so I decided I would scrape the data, which was organized by zip code on factfinder.census.gov. Some of the information I collected was average income, average age, percentage living in poverty, and the number of veterans.
 
 ### Google Maps Nearby Data/API
