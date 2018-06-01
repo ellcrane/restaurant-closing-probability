@@ -5,7 +5,7 @@
 ## About this project
 I ***love*** Mongolian grill. So I was heartbroken to find out that my favorite Mongolian grill restaurant had closed.
 <!-- ![Ruzhen Closed](images/1_ruzhen_closed.png) -->
-<img src="images/1_ruzhen_closed" width="600"/>
+<img src="images/1_ruzhen_closed.png" width="600"/>
 But from this tragedy I found an opportunity. I thought that if I could accurately predict restaurant closure, that would provide valuable information to stakeholders, such as investors, that need a risk assessment of a restaurant. The closing probability predictions were made on restaurant data from May 2018 and deployed at [www.willitclose.com](www.willitclose.com)
 
 ## Overview
