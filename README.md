@@ -91,7 +91,7 @@ Based on these AUCs, predicting restaurant closure in 4 months is still very dif
 ## Feature Overview
 The final model had the following feature count by category:
 <!-- ![Features by category](images/14_features_by_category.png) -->
-<img src="images/14_features_by_category" width="600"/>
+<img src="images/14_features_by_category.png" width="600"/>
 
 Here’s a breakdown of feature importance, or how often the model used each feature:
 
