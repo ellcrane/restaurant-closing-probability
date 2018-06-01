@@ -63,12 +63,17 @@ This included review count, star rating, price level, category (Chinese, Sandwic
 <img src="images/7_yelp_reviews.png" width="600"/>
 <!-- ![Review buckets](images/9_buckets.png) -->
 <img src="images/9_buckets.png" width="600"/>
+
 In order to get more granular features, I bucketed the reviews into 1-star, 2-4 star, and 5-star and then did TFIDF, so the features looked like [# of stars]: [word] (5-star: “service”, etc.). In order to limit the total number of features, I only used the most frequent 100 words from each star bucket for open restaurants, then did the same for closed restaurants. This resulted in a total of 322 features.
+
 <!-- ![Review top features](images/10_review_top_features.png) -->
 <img src="images/10_review_top_features.png" width="600"/>
+
 To limit this feature count further, I put exclusively these features into a gradient boosted classifier to predict if the restaurant were open/closed, and then used only the top 100 features by feature importance in the final model.
+
 <!-- ![Census data](images/8_census.png) -->
 <img src="images/8_census.png" width="600"/>
+
 I thought that economic data about the location in which the restaurant was located would be important, so I went to the census website. Their data was very poorly documented and difficult to parse, so I decided I would scrape the data, which was organized by zip code on factfinder.census.gov. Some of the information I collected was average income, average age, percentage living in poverty, and the number of veterans.
 
 ### Google Maps Nearby Data/API
@@ -79,9 +84,12 @@ I also thought that information on a restaurant’s competitiveness, such as the
 ## Modeling
 <!-- ![Models used](images/12_modeling.png) -->
 <img src="images/12_modeling.png" width="600"/>
+
 For modeling, I used Random Forest, Gradient Boost, KNeighbors, and Logistic Regression.
+
 <!-- ![Gradient boosting ROC curve](images/13_gb_roc.png) -->
 <img src="images/13_gb_roc.png" width="600"/>
+
 With a .66/.33 train/test split, gradient boost performed the best, with an AUC of .73.
 
 For the predictions on the website, only the Yelp - Basic Information features were used, as those were the easiest to obtain for new data, as it could be obtained only by using the Google Maps and Yelp API. The AUC only using this basic information was .67.
@@ -90,6 +98,7 @@ Based on these AUCs, predicting restaurant closure in 4 months is still very dif
 
 ## Feature Overview
 The final model had the following feature count by category:
+
 <!-- ![Features by category](images/14_features_by_category.png) -->
 <img src="images/14_features_by_category.png" width="600"/>
 
